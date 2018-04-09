@@ -27,12 +27,12 @@ class Libgit2Conan(ConanFile):
 		"use_winhttp": [True, False]
 	}
 	default_options = (
-		"shared=False",
+		"shared=True",
 		"threadsafe=True",
 		"use_sha1dc=False",
 		"use_iconv=False",
-		"with_openssl=True",
-		"with_ssh=True",
+		"with_openssl=False",
+		"with_ssh=False",
 		"use_winhttp=True"
 	)
 
@@ -53,30 +53,30 @@ class Libgit2Conan(ConanFile):
 			self.requires.add("libssh2/[>=1.8.0]@bincrafters/stable")
 
 	def build(self):
-	
+
 		# On Windows we need to replace part of the original CMakeLists file in order to locate libssh2
 		if self.settings.os == "Windows":
 			tools.replace_in_file(self.source_subfolder + "/CMakeLists.txt", "PKG_CHECK_MODULES(LIBSSH2 libssh2)", "FIND_PACKAGE(LIBSSH2)")
 			copy2(self.source_folder + "/FindLIBSSH2.cmake", self.source_subfolder + "/cmake/Modules", )
-	
+
 		cmake = CMake(self)
 		cmake.definitions["BUILD_CLAR"] = False
 		cmake.definitions["THREADSAFE"] = self.options.threadsafe
 		cmake.definitions["USE_SHA1DC"] = self.options.use_sha1dc
 		cmake.definitions["USE_ICONV"] = self.options.use_iconv
 		cmake.definitions["USE_SSH"] = self.options.with_ssh
-		
+
 		if self.options.with_ssh:
 			cmake.definitions["CMAKE_INCLUDE_PATH"] =  self.deps_cpp_info['libssh2'].include_paths[0]
 			cmake.definitions["CMAKE_LIBRARY_PATH"] =  self.deps_cpp_info['libssh2'].lib_paths[0]
-			
+
 		cmake.definitions["USE_OPENSSL"] = self.options.with_openssl
-		
+
 		if self.settings.os == "Windows":
 			cmake.definitions["WINHTTP"] = self.options.use_winhttp
 			if self.settings.compiler == "Visual Studio":
 				cmake.definitions["STATIC_CRT"] = self.settings.compiler.runtime == "MT"
-		
+
 		cmake.configure(build_folder=self.build_subfolder)
 		cmake.build()
 
@@ -93,7 +93,7 @@ class Libgit2Conan(ConanFile):
 
 	def package_info(self):
 		self.cpp_info.libs = tools.collect_libs(self)
-		
+
 		if self.settings.os == "Windows":
 			self.cpp_info.libs.append("winhttp.lib")
 			self.cpp_info.libs.append("Rpcrt4.lib")
