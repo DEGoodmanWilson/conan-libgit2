@@ -16,6 +16,8 @@ class Libgit2Conan(ConanFile):
 	exports_sources = ["CMakeLists.txt", "FindLIBSSH2.cmake" ]
 	generators = "cmake"
 
+	requires = "libcurl/7.56.1@bincrafters/stable"
+
 	settings = "os", "arch", "compiler", "build_type"
 	options = {
 		"shared": [True, False],
@@ -48,9 +50,17 @@ class Libgit2Conan(ConanFile):
 	def requirements(self):
 		self.requires.add("zlib/[>=1.2.8]@conan/stable")
 		if self.options.with_openssl and (self.settings.os == "Windows" and not self.options.use_winhttp):
+			self.options["libcurl"].with_openssl = True
 			self.requires.add("OpenSSL/[>1.0.2a,<1.0.3]@conan/stable")
+		else:
+			self.options["libcurl"].with_openssl = False
+
 		if self.options.with_ssh:
 			self.requires.add("libssh2/[>=1.8.0]@bincrafters/stable")
+
+		if tools.os_info.is_macos:
+			if "libcurl" in self.requires:
+				del self.requires["libcurl"]
 
 	def build(self):
 
@@ -98,3 +108,5 @@ class Libgit2Conan(ConanFile):
 			self.cpp_info.libs.append("winhttp.lib")
 			self.cpp_info.libs.append("Rpcrt4.lib")
 			self.cpp_info.libs.append("Crypt32.lib")
+		if tools.os_info.is_macos:
+			self.cpp_info.libs.append("curl")
