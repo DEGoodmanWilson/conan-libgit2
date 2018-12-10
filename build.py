@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
+import os
 
 from bincrafters import build_template_default
 
@@ -50,7 +50,7 @@ def get_env_vars():
 
 def get_os():
     return platform.system().replace("Darwin", "Macos")
-    
+
 if __name__ == "__main__":
     name = get_name_from_recipe()
     username, channel, version = get_env_vars()
