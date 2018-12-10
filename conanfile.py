@@ -27,7 +27,7 @@ class Libgit2Conan(ConanFile):
 		"use_winhttp": [True, False]
 	}
 	default_options = (
-		"shared=True",
+		"shared=False",
 		"threadsafe=True",
 		"use_sha1dc=False",
 		"use_iconv=False",
