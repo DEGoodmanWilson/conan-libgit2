@@ -16,7 +16,7 @@ class Libgit2Conan(ConanFile):
 	exports_sources = ["CMakeLists.txt", "FindLIBSSH2.cmake" ]
 	generators = "cmake"
 
-	requires = "libcurl/7.56.1@bincrafters/stable"
+	requires = "libcurl/7.56.1@bincrafters/stable", "libiconv/1.15@bincrafters/stable"
 
 	settings = "os", "arch", "compiler", "build_type"
 	options = {
@@ -110,3 +110,6 @@ class Libgit2Conan(ConanFile):
 			self.cpp_info.libs.append("Crypt32.lib")
 		if tools.os_info.is_macos:
 			self.cpp_info.libs.append("curl")
+			self.cpp_info.exelinkflags.append("-framework Cocoa")
+			self.cpp_info.exelinkflags.append("-framework Security")
+			self.cpp_info.sharedlinkflags = self.cpp_info.exelinkflags
