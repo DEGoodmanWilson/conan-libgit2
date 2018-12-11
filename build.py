@@ -25,7 +25,7 @@ if __name__ == "__main__":
         upload=upload,
         remotes=remotes,
         archs=archs,
-        build_policy="missing",
+        # build_policy="missing",
         upload_only_when_stable=upload_when_stable,
         stable_branch_pattern=stable_branch_pattern)
 
