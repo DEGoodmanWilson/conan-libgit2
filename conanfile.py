@@ -113,6 +113,6 @@ class Libgit2Conan(ConanFile):
             self.cpp_info.libs.append("Crypt32.lib")
         if tools.os_info.is_macos:
             self.cpp_info.libs.append("curl")
-            # self.cpp_info.exelinkflags.append("-framework Cocoa")
-            # self.cpp_info.exelinkflags.append("-framework Security")
-            # self.cpp_info.sharedlinkflags = self.cpp_info.exelinkflags
+            self.cpp_info.exelinkflags.append("-framework Cocoa")
+            self.cpp_info.exelinkflags.append("-framework Security")
+            self.cpp_info.sharedlinkflags = self.cpp_info.exelinkflags
