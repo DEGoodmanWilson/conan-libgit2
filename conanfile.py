@@ -68,9 +68,10 @@ class Libgit2Conan(ConanFile):
     def build(self):
 
         # On Windows we need to replace part of the original CMakeLists file in order to locate libssh2
-        if self.settings.os == "Windows":
+        if not tools.os_info.is_macos:
             tools.replace_in_file(self.source_subfolder + "/CMakeLists.txt", "PKG_CHECK_MODULES(LIBSSH2 libssh2)", "FIND_PACKAGE(LIBSSH2)")
             copy2(self.source_folder + "/FindLIBSSH2.cmake", self.source_subfolder + "/cmake/Modules", )
+            tools.replace_in_file(self.source_subfolder + "/CMakeLists.txt", "PKG_CHECK_MODULES(CURL libcurl)", "FIND_PACKAGE(LIBCURL)")
 
         cmake = CMake(self)
         cmake.definitions["BUILD_CLAR"] = False
