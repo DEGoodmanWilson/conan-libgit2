@@ -66,6 +66,7 @@ class Libgit2Conan(ConanFile):
                 del self.requires["libcurl"]
 
     def build(self):
+        cmake = CMake(self)
 
         # On Windows we need to replace part of the original CMakeLists file in order to locate libssh2
         if not tools.os_info.is_macos:
@@ -77,7 +78,6 @@ class Libgit2Conan(ConanFile):
             cmake.definitions["CURL_LIBRARIES"] = "curl"
             cmake.definitions["CURL_LDFLAGS"] = "-lcurl"
 
-        cmake = CMake(self)
         cmake.definitions["BUILD_CLAR"] = False
         cmake.definitions["THREADSAFE"] = self.options.threadsafe
         cmake.definitions["USE_SHA1DC"] = self.options.use_sha1dc
