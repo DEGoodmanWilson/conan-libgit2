@@ -16,7 +16,7 @@ class Libgit2Conan(ConanFile):
     exports_sources = ["CMakeLists.txt", "FindLIBSSH2.cmake" ]
     generators = "cmake"
 
-    requires = "libcurl/7.61.1@bincrafters/stable", "libiconv/1.15@bincrafters/stable"
+    requires = "zlib/1.2.8@conan/stable", "libcurl/7.61.1@bincrafters/stable", "libiconv/1.15@bincrafters/stable"
 
     settings = "os", "arch", "compiler", "build_type"
     options = {
@@ -48,15 +48,18 @@ class Libgit2Conan(ConanFile):
         os.rename(extracted_dir, self.source_subfolder)
 
     def requirements(self):
-        self.requires.add("zlib/[>=1.2.8]@conan/stable")
-        if self.options.with_openssl and (self.settings.os == "Linux" || (self.settings.os == "Windows" and not self.options.use_winhttp)):
+        if self.options.with_openssl and (tools.os_info.is_macos or (self.settings.os == "Windows" and self.options.use_winhttp)):
+        	self.options.with_openssl = False
+
+        if self.options.with_openssl:
             self.options["libcurl"].with_openssl = True
-            self.requires.add("OpenSSL/[>1.0.2a,<1.0.3]@conan/stable")
         else:
             self.options["libcurl"].with_openssl = False
 
         if self.options.with_ssh:
-            self.requires.add("libssh2/[~=1.8]@bincrafters/stable")
+            self.options["libcurl"].with_libssh2 = True
+        else:
+            self.options["libcurl"].with_libssh2 = False
 
         if tools.os_info.is_macos:
             if "libcurl" in self.requires:
@@ -76,9 +79,9 @@ class Libgit2Conan(ConanFile):
         cmake.definitions["USE_ICONV"] = self.options.use_iconv
         cmake.definitions["USE_SSH"] = self.options.with_ssh
 
-        if self.options.with_ssh:
-            cmake.definitions["CMAKE_INCLUDE_PATH"] =  self.deps_cpp_info['libssh2'].include_paths[0]
-            cmake.definitions["CMAKE_LIBRARY_PATH"] =  self.deps_cpp_info['libssh2'].lib_paths[0]
+        # if self.options.with_ssh:
+        #     cmake.definitions["CMAKE_INCLUDE_PATH"] =  self.deps_cpp_info['libssh2'].include_paths[0]
+        #     cmake.definitions["CMAKE_LIBRARY_PATH"] =  self.deps_cpp_info['libssh2'].lib_paths[0]
 
         cmake.definitions["USE_OPENSSL"] = self.options.with_openssl
 
@@ -110,6 +113,6 @@ class Libgit2Conan(ConanFile):
             self.cpp_info.libs.append("Crypt32.lib")
         if tools.os_info.is_macos:
             self.cpp_info.libs.append("curl")
-            self.cpp_info.exelinkflags.append("-framework Cocoa")
-            self.cpp_info.exelinkflags.append("-framework Security")
-            self.cpp_info.sharedlinkflags = self.cpp_info.exelinkflags
+            # self.cpp_info.exelinkflags.append("-framework Cocoa")
+            # self.cpp_info.exelinkflags.append("-framework Security")
+            # self.cpp_info.sharedlinkflags = self.cpp_info.exelinkflags
