@@ -71,6 +71,11 @@ class Libgit2Conan(ConanFile):
         if not tools.os_info.is_macos:
             tools.replace_in_file(self.source_subfolder + "/CMakeLists.txt", "PKG_CHECK_MODULES(LIBSSH2 libssh2)", "FIND_PACKAGE(LIBSSH2)")
             copy2(self.source_folder + "/FindLIBSSH2.cmake", self.source_subfolder + "/cmake/Modules", )
+            tools.replace_in_file(self.source_subfolder + "/CMakeLists.txt", "PKG_CHECK_MODULES(CURL libcurl)", "SET(CURL_FOUND true)")
+            cmake.definitions["CURL_INCLUDE_DIRS"] = self.deps_cpp_info['libcurl'].include_paths[0]
+            cmake.definitions["CURL_LIBRARY_DIRS"] = self.deps_cpp_info['libcurl'].lib_paths[0]
+            cmake.definitions["CURL_LIBRARIES"] = "curl"
+            cmake.definitions["CURL_LDFLAGS"] = "-lcurl"
 
         cmake = CMake(self)
         cmake.definitions["BUILD_CLAR"] = False
@@ -82,11 +87,6 @@ class Libgit2Conan(ConanFile):
         # if self.options.with_ssh:
         #     cmake.definitions["CMAKE_INCLUDE_PATH"] =  self.deps_cpp_info['libssh2'].include_paths[0]
         #     cmake.definitions["CMAKE_LIBRARY_PATH"] =  self.deps_cpp_info['libssh2'].lib_paths[0]
-
-  #         Add the installation prefix of "LIBCURL" to CMAKE_PREFIX_PATH or set
-  # "LIBCURL_DIR" to a directory containing one of the above files.  If
-  # "LIBCURL" provides a separate development package or SDK, be sure it has
-  # been installed.
 
         cmake.definitions["USE_OPENSSL"] = self.options.with_openssl
 
