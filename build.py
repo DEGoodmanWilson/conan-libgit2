@@ -27,3 +27,6 @@ if __name__ == "__main__":
         archs=archs,
         upload_only_when_stable=upload_when_stable,
         stable_branch_pattern=stable_branch_pattern)
+
+    builder.add_common_builds(shared_option_name=name + ":shared")
+    builder.run()
