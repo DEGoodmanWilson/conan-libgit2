@@ -56,10 +56,10 @@ class Libgit2Conan(ConanFile):
         else:
             self.options["libcurl"].with_openssl = False
 
-        if self.options.with_ssh:
-            self.options["libcurl"].with_libssh2 = True
-        else:
-            self.options["libcurl"].with_libssh2 = False
+        # if self.options.with_ssh:
+        #     self.options["libcurl"].with_libssh2 = True
+        # else:
+        #     self.options["libcurl"].with_libssh2 = False
 
         if tools.os_info.is_macos:
             if "libcurl" in self.requires:
