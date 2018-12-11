@@ -49,7 +49,7 @@ class Libgit2Conan(ConanFile):
 
     def requirements(self):
         self.requires.add("zlib/[>=1.2.8]@conan/stable")
-        if self.options.with_openssl and (self.settings.os == "Windows" and not self.options.use_winhttp):
+        if self.options.with_openssl and (self.settings.os == "Linux" || (self.settings.os == "Windows" and not self.options.use_winhttp)):
             self.options["libcurl"].with_openssl = True
             self.requires.add("OpenSSL/[>1.0.2a,<1.0.3]@conan/stable")
         else:
