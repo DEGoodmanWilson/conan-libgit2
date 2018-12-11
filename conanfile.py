@@ -16,7 +16,7 @@ class Libgit2Conan(ConanFile):
 	exports_sources = ["CMakeLists.txt", "FindLIBSSH2.cmake" ]
 	generators = "cmake"
 
-	requires = "libcurl/7.56.1@bincrafters/stable", "libiconv/1.15@bincrafters/stable"
+	requires = "libcurl/7.61.1@bincrafters/stable", "libiconv/1.15@bincrafters/stable"
 
 	settings = "os", "arch", "compiler", "build_type"
 	options = {
