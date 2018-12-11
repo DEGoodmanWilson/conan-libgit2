@@ -11,7 +11,7 @@ if __name__ == "__main__":
     name = build_shared.get_name_from_recipe()
     username, channel, version, login_username = build_shared.get_conan_vars()
     reference = "{0}/{1}".format(name, version)
-    upload = build_shared.get_conan_upload(username)
+    upload = "https://api.bintray.com/conan/{0}/opensource".format(username.lower())
     bincrafters = "https://api.bintray.com/conan/bincrafters/public-conan"
     remotes = os.getenv("CONAN_REMOTES", [upload, bincrafters])
     upload_when_stable = build_shared.get_upload_when_stable()
